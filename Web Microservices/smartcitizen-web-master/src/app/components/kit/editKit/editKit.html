@@ -1,0 +1,293 @@
+<section class="kit_dataChange">
+  <section class="timeline" flex="1" layout="row" layout-align="center center">
+    <div class="timeline_container" layout="row" layout-align="space-between center">
+      <div layout="row" layout-align="start center" ng-show="vm.step === 1">
+        <!-- TODO: Refactor - This was removed -->
+        <!-- <div class="timeline_stepCircle"
+        layout="row" layout-align="center center">
+          1
+        </div> -->
+        <h2 class="timeline_stepName timeline-title">
+          Edit your kit
+        </h2>
+      </div>
+      <div layout="row" layout-align="start center" ng-show="vm.step === 2">
+        <!-- TODO: Refactor - This was removed -->
+        <!-- <div class="timeline_stepCircle"
+        layout="row" layout-align="center center">
+          1
+        </div> -->
+        <h2 class="timeline_stepName timeline-title">
+          Finalise your setup
+        </h2>
+      </div>
+      <!-- TODO: Refactor - This was removed -->
+      <div ng-if="vm.deviceData.isLegacy" class="timeline_line timeline_line_small" ng-show="vm.step === 2"></div>
+        <div ng-if="vm.deviceData.isLegacy" layout="row" layout-align="start center">
+          <div class="timeline_stepCircle"
+          ng-show="vm.step === 2"
+          layout="row" layout-align="center center">
+            2
+          </div>
+          <md-button ng-if="vm.deviceData.isLegacy" ng-click="vm.goToStep(2)" class="timeline_stepName">
+            Set up
+          </md-button>
+        </div>
+      </div>
+      <!-- TODO: Cosmetic Make nicer -->
+      <!-- <md-button style="margin-left: auto" class="md-flat md-primary timeline_buttonBack" ng-click="vm.backToDevice()">Back to Device</md-button> -->
+      <md-button ng-show="vm.step===1" class="timeline_buttonBack btn-round-new btn-outline-white" ng-click="vm.backToProfile()">Back</md-button>
+      <md-button class="btn-round-new btn-outline-white-blue" ng-click="vm.submitFormAndKit()">Save</md-button>
+    </div>
+  </section>
+  <section class="timeline_content" flex="1">
+    <section ng-show="vm.step === 1">
+      <form>
+         <section class="bg-white relaxed-layout" layout-padding div layout="row" layout-xs="column" layout-align="space-around start">
+           <div flex-gt-xs="50">
+             <div layout="row">
+               <div class="">
+                 <h2>Basic information</h2>
+                 <small>Want to change your kit's name? Or perhaps say something nice about it in the description?
+                  <br>Don't forget about the exposure!</small>
+               </div>
+             </div>
+           </div>
+           <div flex-gt-xs="50">
+             <div class="" layout="column">
+               <md-input-container>
+                 <label>Kit Name</label>
+                 <input type="text" class="font-roboto-condensed" ng-model="vm.deviceForm.name">
+                 <div class="form_errors">
+                  <div ng-repeat="error in vm.errors.name">Name {{ error }}</div>
+                </div>
+               </md-input-container>
+               <md-input-container flex="100" flex-gt-md="50">
+                <label>Say something nice about your kit, what is it for?</label>
+                <textarea class="font-roboto-condensed" type="text" ng-model="vm.deviceForm.description" placeholder="Describe your kit" md-maxlength="120"></textarea>
+               </md-input-container>
+                <md-input-container flex="100" flex-gt-md="50" ng-if="!vm.device.isSCK">
+                  <label>Seems like you have a custom kit, tell us what is it! (i.e. DIY Kit with CO2)</label>
+                  <textarea class="font-roboto-condensed" type="text" ng-model="vm.deviceForm.hardwareName" placeholder="Describe your kit" md-maxlength="120"></textarea>
+                </md-input-container>
+                <div layout="row" layout-align="space-between start">
+                 <div class="" layout="row" layout-align="start center">
+                   <label class="mr-10">Exposure:</label>
+                   <md-select ng-model="vm.deviceForm.exposure" placeholder="Select exposure">
+                     <md-option class="color-dropdown" ng-repeat="exposure in vm.exposure" ng-value="{{ exposure.value }}">{{ exposure.name }}</md-option>
+                   </md-select>
+                 </div>
+               </div>
+             </div>
+           </div>
+        </section>
+        <section class="bg-white relaxed-layout" layout-padding div layout="row" layout-xs="column" layout-align="space-around start" ng-if="vm.device.isLegacy">
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <div class="">
+                <h2>Legacy devices</h2>
+                <small>Seems like you have a {{vm.device.hardware.name}}. Use this field to input your MAC address. You can find the MAC address using the <a target="_blank" href="https://docs.smartcitizen.me/Guides/getting%20started/Using%20the%20Shell/">onboard kit's shell</a>. More information in the <a target="_blank" href="https://docs.smartcitizen.me/Components/legacy/?h=serial+way#manual-set-up-the-serial-way">docs</a></small>
+              </div>
+            </div>
+          </div>
+          <div flex-gt-xs="50">
+            <div class="" layout="column">
+              <md-input-container>
+                <label>Input here the MAC Address</label>
+                <input type="text" ng-model="vm.deviceForm.macAddress">
+                <div class="form_errors">
+                  <div ng-repeat="error in vm.errors.mac_address">MAC address {{ error }}</div>
+                </div>
+                <!-- TODO: Refactor -->
+                <!-- <input type="text" pattern="([0-9A-Fa-f]{2}\:){5}([0-9A-Fa-f]{2})" ng-model="vm.deviceForm.macAddress"> -->
+              </md-input-container>
+            </div>
+          </div>
+        </section>
+        <section class="form_blockMap relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding>
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <div>
+                <h2>Kit location</h2>
+                <small>You can adjust the location by dragging the marker on the map.</small>
+              </div>
+            </div>
+          </div>
+          <div flex="50">
+            <div class="form_blockInput_button" ng-if="!vm.deviceForm.location.lat && !vm.deviceForm.location.lng">
+              <div class="form_blockInput_container" layout="row" layout-align="center center">
+                <md-button class="md-flat btn-cyan" ng-click="vm.getLocation()">Get your location</md-button>
+              </div>
+            </div>
+            <div class="form_blockInput_map" ng-if="vm.deviceForm.location.lat && vm.deviceForm.location.lng">
+              <leaflet center="vm.deviceForm.location" defaults="vm.defaults" markers="vm.markers" tiles="vm.tiles" width="100%" height="100%"></leaflet>
+            </div>
+          </div>
+        </section>
+
+        <!-- TODO: Refactor Can this be pushed? -->
+        <!-- <section layout="row" layout-xs="column" layout-align="space-around start" layout-padding>
+          <div flex-gt-xs="50">
+            <div>
+              <h2>About the hardware</h2>
+              <small>If you have some custom kit, you can tell us here (i.e. SCK 2.2 + CO2)</small>
+            </div>
+          </div>
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <md-input-container flex="100" flex-gt-md="50">
+                <label>Hardware Description</label>
+                <textarea class="font-roboto-condensed" type="text" ng-model="vm.deviceForm.hardware" placeholder="Describe your hardware" md-maxlength="30"></textarea>
+              </md-input-container>
+            </div>
+          </div>
+        </section> -->
+        <!-- TODO - Only for admins and researchers now, but should be private for anyone, same for precise location -->
+        <section class="bg-white relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding ng-if="vm.userRole === 'researcher' || vm.userRole === 'admin'">
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <div class="">
+                <h2>Open data</h2>
+                <small>Sometimes, your devices might be collecting sensitive personal data (i.e. your exact location or by GPS using in your bike).<br>Check the box in case you want to prevent others from accesssing your data. You can also choose to blurr the location, or enable MQTT forwarding.
+                </small>
+              </div>
+            </div>
+          </div>
+          <div flex-gt-xs="50">
+            <div class="" layout="column">
+              <p>Manage how others can access your data:</p>
+               <md-checkbox ng-model="vm.deviceForm.is_private">
+                 <label>Make this device private</label>
+               </md-checkbox>
+               <md-checkbox ng-model="vm.deviceForm.precise_location">
+                <label>Enable precise location</label>
+              </md-checkbox>
+              <md-checkbox ng-model="vm.deviceForm.enable_forwarding">
+                <label>Enable MQTT forwarding</label>
+              </md-checkbox>
+            </div>
+          </div>
+        </section>
+        <section class="relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding>
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <div class="">
+                <h2>Notifications</h2>
+                <small>Manage your notifications</small>
+              </div>
+            </div>
+          </div>
+          <div flex-gt-xs="50">
+            <div class="" layout="column">
+              <p>Get emails when the following events occur:</p>
+              <md-checkbox ng-model="vm.deviceForm.notify_low_battery">
+                <label>Battery goes below 15%</label>
+              </md-checkbox>
+              <md-checkbox ng-model="vm.deviceForm.notify_stopped_publishing">
+                <label>Device stopped publishing</label>
+              </md-checkbox>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-white relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding>
+          <div flex-gt-xs="50">
+            <h2>Kit tags</h2>
+            <small>Kits can be grouped by tags. Choose from the available tags or submit a tag request on the <a href="https://forum.smartcitizen.me/" target="_blank">Forum</a>.</small>
+          </div>
+          <div flex-gt-xs="50">
+            <md-input-container>
+              <label>Select tags</label>
+              <md-select ng-model="selectedTags"
+                         md-on-close="clearSearchTerm()"
+                         data-md-container-class="selectdemoSelectHeader"
+                         multiple>
+                <md-select-header class="kit_tags-select-header">
+                  <input ng-model="searchTerm"
+                         type="search"
+                         placeholder="Search for a tag.."
+                         class="kit_tags-header-searchbox md-text">
+                </md-select-header>
+                <md-optgroup label="tags">
+                  <md-option class="color-dropdown" ng-selected="vm.deviceForm.tags.includes(item.name)" ng-model="vm.deviceForm.tags" ng-value="item" ng-repeat="item in vm.tags | filter:searchTerm">
+                    {{item.name}}
+                  </md-option>
+                </md-optgroup>
+              </md-select>
+            </md-input-container>
+          </div>
+        </section>
+        <section class="relaxed-layout" layout-gt-sm="row" layout="column" layout-padding>
+          <div flex="100">
+            <h2>Postprocessing info</h2>
+            <small>
+              Follow the instructions <a href="https://docs.smartcitizen.me/Guides/data/Handling%20calibration%20data/" target="_blank">here</a> to generate a valid JSON containing the postprocessing information for your device.
+              This is an advanced feature and it's not required for standard Smart Citizen Kits!
+              <br>
+              <br>
+              Last updated: {{vm.deviceForm.postprocessing.updated_at}}
+              <br>
+              Latest postprocessing: {{vm.deviceForm.postprocessing.latest_postprocessing}}
+            </small>
+          </div>
+          <div layout="column" flex="100">
+            <md-input-container>
+              <label>Hardware url</label>
+              <input type="text" class="font-roboto-condensed" ng-model="vm.deviceForm.postprocessing.hardware_url">
+            </md-input-container>
+          </div>
+        </section>
+      </form>
+      <!-- TODO: Refactor, remove -->
+      <!-- <div class="mt-50" layout="row" layout-align="center start" layout-margin layout-padding>
+        <md-button class="fillwidth md-raised md-accent" ng-click="vm.submitFormAndKit()">Save</md-button>
+      </div> -->
+      <!-- <div layout layout-padding layout-margin>
+        <md-button ng-show="vm.deviceData.isLegacy" class="fillwidth md-raised md-primary mb-30" ng-click="vm.submitFormAndNext()">Open kit set up</md-button>
+      </div> -->
+    </section>
+
+    <section ng-if="vm.step === 2">
+      <form>
+        <section class="relaxed-layout bg-white">
+          <div layout="row" layout-xs="column" layout-align="start start" layout-padding>
+            <div>
+              <h2>Setup your kit</h2>
+              <small>In order to have your kit connected to the Smart Citizen platform, we need a few step involving the connection of your kit to your computer. If this is your first time, maybe you will like to follow the <a href="https://docs.smartcitizen.me/Components/legacy/?h=serial+way#manual-set-up-the-serial-way" target="_blank">Startup guide</a>.</small>
+            </div>
+            <img src="assets/images/sckit_avatar_2.jpg" alt="Smartcitizen Kit">
+          </div>
+        </section>
+      </form>
+      <!-- TODO: Refactor - remove -->
+      <!-- <section class="bg-white" layout-padding>
+        <div setuptool></div>
+      </section> -->
+      <form>
+        <section class="form_blockNormal relaxed-layout">
+        <!-- <section ng-show="vm.macAddressFieldVisible" class="form_blockNormal isEven"> -->
+          <div layout="row" layout-xs="column" layout-align="start start" layout-padding>
+            <div flex-gt-xs="50">
+              <h2>MAC address</h2>
+              Use this field to input your MAC address. You can find the MAC address using the <a target="_blank" href="https://docs.smartcitizen.me/Guides/getting%20started/Using%20the%20Shell/">onboard kit's shell</a>.
+            </div>
+            <div>
+              <md-input-container>
+                <label>MAC Address</label>
+                <!-- TODO: Refactor, check -->
+                <input type="text" ng-model="vm.deviceForm.macAddress">
+                <div class="form_errors">
+                  <div ng-repeat="error in vm.errors.mac_address">MAC address {{ error }}</div>
+                </div>
+              </md-input-container>
+            </div>
+          </div>
+        </section>
+      </form>
+      <md-progress-linear class="md-hue-3" ng-show="vm.nextAction == 'waiting'" md-mode="indeterminate"></md-progress-linear>
+      <md-button ng-disabled="true" ng-show="vm.nextAction == 'waiting'" class="md-primary timeline_button timeline_buttonOpen">Waiting for your kit's data<small>We are waiting for your kit to connect on-line, this can take a few minutes</small><small> Check the process on the report window and contact <a ng-href="mailto:support@smartcitizen.me">support@smartcitizen.me</a> if you have any problem.</small></md-button>
+      <md-button ng-click="vm.submitFormAndKit()" ng-show="vm.nextAction == 'ready'" class="md-primary timeline_button timeline_buttonOpen inverted">Ready! <small>Go and visit your kit on-line</small></md-button>
+    </section>
+
+  </section>
+</section>

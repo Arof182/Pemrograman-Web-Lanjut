@@ -1,0 +1,111 @@
+<section class="kit_dataChange">
+  <section class="timeline" flex="1" layout="row" layout-align="center center">
+    <div class="timeline_container" layout="row" layout-align="space-between center">
+      <div layout="column" layout-align="start center">
+        <div class="timeline_stepName vertical timeline-title">
+          Add your kit
+        </div>
+      </div>
+      <md-button ng-show="vm.step===1" class="timeline_buttonBack btn-round-new btn-outline-white" ng-click="vm.backToProfile()">Back<span class="timeline-btn-extra"> to Profile</span></md-button>
+      <md-button class="btn-round-new btn-outline-white-blue" ng-click="vm.submitStepOne()">Next</md-button>
+    </div>
+  </section>
+  <section class="timeline_content" flex="1">
+    <section ng-show="vm.step === 1">
+      <form>
+        <section class="bg-white relaxed-layout" layout-padding div  layout="row" layout-xs="column" layout-align="space-around start" layout-xs="column" >
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <div class="">
+                <h2>Basic information</h2>
+                <small>Want to change your kit's name? Or perhaps say something nice about it in the description?
+                  <br>Don't forget about the exposure!</small>
+              </div>
+            </div>
+          </div>
+          <div flex-gt-xs="50">
+            <div class="" layout="column">
+            <md-input-container>
+              <label>Kit Name</label>
+              <input type="text" class="font-roboto-condensed" ng-model="vm.deviceForm.name">
+              <div class="form_errors">
+                <div ng-repeat="error in vm.errors.name">Name {{ error }}</div>
+              </div>
+            </md-input-container>
+            <md-input-container>
+              <label>Say something nice about your kit, what is it for?</label>
+              <textarea type="text" class="font-roboto-condensed" ng-model="vm.deviceForm.description" placeholder="Describe your kit" md-maxlength="120"></textarea>
+            </md-input-container>
+            <div layout="row" layout-align="space-between start">
+              <div class="form_blockInput_select" layout="row" layout-align="start center">
+                <label class="mr-10">Exposure:</label>
+                <md-select ng-model="vm.deviceForm.exposure" placeholder="Select exposure">
+                  <md-option class="color-dropdown" ng-repeat="exposure in vm.exposure" ng-value="{{ exposure.value }}">{{ exposure.name }}</md-option>
+                </md-select>
+              </div>
+            </div>
+            <div class="form_blockInput_select" layout="row" layout-align="start center" style="margin-top: 20px">
+              <label class="mr-10">Hardware version:</label>
+              <md-select ng-model="vm.deviceForm.legacyVersion" placeholder="Select hardware version">
+                <md-option class="color-dropdown" ng-repeat="version in vm.version" ng-value="{{ version.value }}">{{ version.name }}</md-option>
+              </md-select>
+            </div>
+          </div>
+        </section>
+        <section class="relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding ng-if="vm.userRole === 'researcher' || vm.userRole === 'admin'">
+          <div flex-gt-xs="50">
+            <div layout="row">
+              <div class="">
+                <h2>Open data</h2>
+                <small>Sometimes, your devices might be collecting sensitive personal data (i.e. your exact location or by GPS using in your bike).<br>Check the box in case you want to prevent others from accesssing your data.
+                </small>
+              </div>
+            </div>
+          </div>
+          <div flex-gt-xs="50">
+            <div class="" layout="column">
+              <p>Manage how others can access your data:</p>
+               <md-checkbox ng-model="vm.deviceForm.is_private">
+                 <label>Make this device private</label>
+               </md-checkbox>
+            </div>
+          </div>
+        </section>
+
+        <section class="bg-white relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding>
+          <div flex-gt-xs="50">
+            <h2>Kit location</h2>
+            <small>Please, let us locate you, later you can adjust the location by dragging the marker on the map.</small>
+          </div>
+          <div class="mt-50"  flex-gt-xs="50">
+            <div layout="row" layout-align="center center" class="" ng-if="!vm.deviceForm.location.lat && !vm.deviceForm.location.lng">
+              <md-button class="md-flat btn-cyan" ng-click="vm.getLocation()">Get your location</md-button>
+            </div>
+            <div class="form_blockInput_map" ng-if="vm.deviceForm.location.lat && vm.deviceForm.location.lng">
+              <leaflet center="vm.deviceForm.location" defaults="vm.defaults" markers="vm.markers" tiles="vm.tiles" width="100%" height="100%"></leaflet>
+            </div>
+          </div>
+        </section>
+
+        <section class="isEven relaxed-layout" layout="row" layout-xs="column" layout-align="space-around start" layout-padding>
+          <div flex-gt-xs="50">
+            <h2>Kit tags</h2>
+            <small>Kits can be grouped by tags. Choose from the available tags or submit a tag request on the <a href="https://forum.smartcitizen.me/" target="_blank">Forum</a>.</small>
+          </div>
+          <div class="mt-50"  flex-gt-xs="50" layout-padding>
+            <md-input-container md-no-float class="md-block">
+              <input type="text" ng-model="tagSearch" placeholder="Search for tags">
+            </md-input-container>
+            <md-content layout-padding style="height: calc(20vh);">
+              <div ng-repeat="tag in vm.tags | filter:{name: tagSearch}">
+                <md-checkbox ng-model="vm.checks[tag.name]">
+                  <span class="tag">{{tag.name}}</span>
+                </md-checkbox>
+              </div>
+            </md-content>
+          </div>
+        </section>
+      </form>
+    </section>
+  </section>
+</section>

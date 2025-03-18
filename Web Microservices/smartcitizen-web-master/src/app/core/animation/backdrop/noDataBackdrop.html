@@ -1,0 +1,17 @@
+<md-backdrop ng-if="vm.deviceWithoutData" class="md-noDataBackdrop">
+  <div class="block info_overlay" layout="column" layout-align="center center">
+    <div ng-if="vm.user === 'visitor'">
+      <h2 class="title">
+        This kit hasn’t still said a word 👶
+      </h2>
+      <!-- Message area not currently visible. Fix CSS -->
+      <!-- <p class="message"> -->
+      </p>
+    </div>
+    <div ng-if="vm.user === 'owner'" class="static_page">
+      <h2 class="title">
+        Your kit has still not posted any data 🔧🔩🔨
+      </h2>
+    </div>
+  </div>
+</md-backdrop>

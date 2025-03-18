@@ -1,0 +1,43 @@
+<section class="kitTags__section" ng-if="tagsCtl.selectedTags.length > 0" change-content-margin>
+  <div class="shadow"></div>
+  <div class="over_map">
+    <div class="kit_fixed kitTags__container bg-white">
+      <div class="kitTags__textContainer" layout-xs="column">
+        <div class="kitTags__textElement">
+          <h1>
+          <span ng-repeat="tag in tagsCtl.selectedTags">#{{tag}} </span>
+          </h1>
+          <h2>
+          {{tagsCtl.markers.length}} kit{{tagsCtl.markers.length > 1 ? 's are' : ' is'}} on
+          <span ng-repeat="tag in tagsCtl.selectedTags">#{{tag}}</span> and
+          {{tagsCtl.percActive}}% are active today.
+          </h2>
+          <p ng-repeat="tag in tagsCtl.selectedTags">
+          </p>
+        </div>
+        <div class="kitTags__textElement">
+          <h4 class="md-title">About #Tags</h4>
+          <p class="sg-paragraph2">
+            These tags are contributed by the community and show the variety applications of the Smart Citizen Project. You can use tags to organize and filter devices. If you need a tag, and you can't find one that works for you, you can request the creation of new tags in the forum.
+          </p>
+          <br>
+          <a style="text-decoration: none" href="https://forum.smartcitizen.me/c/general/" class="md-button btn-black-outline btn-round-new">SUGGEST NEW TAGS</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="kitTags__listContainer kit_fixed">
+    <md-progress-circular ng-show="!tagsCtl.devices || tagsCtl.devices.length <= 0" class="md-hue-3 chart_spinner" md-mode="indeterminate"></md-progress-circular>
+    <section class="kit_owner_kits" ng-if="tagsCtl.devices.length > 0">
+      <kit-list devices="tagsCtl.devices"></kit-list>
+    </section>
+  </div>
+</section>
+<!-- <section class="kitTags__section kit_fixed" ng-if="tagsCtl.selectedTags.length === 0">
+  <section>
+    <div class="kitTags__container">
+      <div class="kiTags__noTag">
+        No Tag selected yet.
+      </div>
+    </div>
+  </section> -->
